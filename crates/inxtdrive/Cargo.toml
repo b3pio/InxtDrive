@@ -1,0 +1,138 @@
+[package]
+name = "inxtdrive"
+description = "Unofficial Internxt Drive client that mounts your cloud as a local drive"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+build = "build.rs"
+
+[lib]
+name = "inxtdrive"
+path = "src/lib.rs"
+
+[[bin]]
+name = "inxtdrive"
+path = "src/main.rs"
+
+[[bin]]
+name = "inxt"
+path = "src/bin/inxt.rs"
+
+[dependencies]
+inxt-api.workspace = true
+inxt-core.workspace = true
+anyhow.workspace = true
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+toml.workspace = true
+dirs.workspace = true
+parking_lot.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+tracing-appender.workspace = true
+chrono.workspace = true
+url.workspace = true
+rand.workspace = true
+hex.workspace = true
+rpassword = "7"
+
+[target.'cfg(any(windows, target_os = "linux"))'.dependencies]
+# No libxdo: it only backs predefined Copy/Paste menu items, which the tray does not use.
+tray-icon = { version = "0.21", default-features = false }
+tao = "0.34"
+wry = { version = "0.53", default-features = false, features = ["protocol", "os-webview"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+inxt-fuse.workspace = true
+gtk = "0.18"
+png = "0.17"
+keyring = { version = "3", features = ["sync-secret-service", "crypto-rust"] }
+aes-gcm.workspace = true
+libc = "0.2"
+
+[target.'cfg(windows)'.dependencies]
+inxt-winfsp.workspace = true
+winreg = "0.52"
+windows = { workspace = true, features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_Security_Cryptography",
+    "Win32_System_Com",
+    "Win32_System_Console",
+    "Win32_System_DataExchange",
+    "Win32_System_Memory",
+    "Win32_System_Threading",
+    "Win32_Storage_FileSystem",
+    "Win32_UI_HiDpi",
+    "Win32_UI_Shell",
+    "Win32_UI_Shell_Common",
+    "Win32_UI_WindowsAndMessaging",
+] }
+
+[package.metadata.deb]
+name = "inxtdrive"
+maintainer = "InxtDrive contributors <dev@inxtdrive.invalid>"
+license-file = ["../../packaging/debian/copyright", "0"]
+extended-description = """\
+Unofficial client for Internxt Drive that shows your cloud as a normal folder \
+(~/Internxt by default). Files download when you open them, changes upload in \
+the background, and a tray icon shows sync status."""
+section = "net"
+priority = "optional"
+depends = "$auto, fuse3, libayatana-appindicator3-1, xdg-utils"
+assets = [
+    ["target/release/inxtdrive", "usr/bin/", "755"],
+    ["target/release/inxt", "usr/bin/", "755"],
+    ["../../packaging/linux/inxtdrive.desktop", "usr/share/applications/", "644"],
+    ["../../assets/inxtdrive.svg", "usr/share/icons/hicolor/scalable/apps/", "644"],
+    ["../../assets/inxtdrive-256.png", "usr/share/icons/hicolor/256x256/apps/inxtdrive.png", "644"],
+    ["../../README.md", "usr/share/doc/inxtdrive/", "644"],
+]
+
+[package.metadata.generate-rpm]
+name = "inxtdrive"
+license = "GPL-3.0-or-later"
+summary = "Unofficial Internxt Drive client that mounts your cloud as a folder"
+url = "https://internxt.com"
+assets = [
+    { source = "target/release/inxtdrive", dest = "/usr/bin/inxtdrive", mode = "755" },
+    { source = "target/release/inxt", dest = "/usr/bin/inxt", mode = "755" },
+    { source = "../../packaging/linux/inxtdrive.desktop", dest = "/usr/share/applications/inxtdrive.desktop", mode = "644" },
+    { source = "../../assets/inxtdrive.svg", dest = "/usr/share/icons/hicolor/scalable/apps/inxtdrive.svg", mode = "644" },
+    { source = "../../assets/inxtdrive-256.png", dest = "/usr/share/icons/hicolor/256x256/apps/inxtdrive.png", mode = "644" },
+    { source = "../../README.md", dest = "/usr/share/doc/inxtdrive/README.md", mode = "644", doc = true },
+]
+
+# The automatic scan runs in the Ubuntu build container and also picks up
+# libraries of libraries under their Ubuntu names (libicu 70, libjpeg.so.8),
+# which no RPM distribution provides. So requires are the libraries the
+# binaries link directly, by soname. The tray library loads
+# libayatana-appindicator at runtime, so no scan could see that one anyway.
+auto-req = "no"
+
+[package.metadata.generate-rpm.requires]
+fuse3 = "*"
+xdg-utils = "*"
+"libayatana-appindicator3.so.1()(64bit)" = "*"
+"libwebkit2gtk-4.1.so.0()(64bit)" = "*"
+"libjavascriptcoregtk-4.1.so.0()(64bit)" = "*"
+"libsoup-3.0.so.0()(64bit)" = "*"
+"libgtk-3.so.0()(64bit)" = "*"
+"libgdk-3.so.0()(64bit)" = "*"
+"libgdk_pixbuf-2.0.so.0()(64bit)" = "*"
+"libcairo.so.2()(64bit)" = "*"
+"libgio-2.0.so.0()(64bit)" = "*"
+"libgobject-2.0.so.0()(64bit)" = "*"
+"libglib-2.0.so.0()(64bit)" = "*"
+"libdbus-1.so.3()(64bit)" = "*"
+"libgcc_s.so.1()(64bit)" = "*"
+"libc.so.6(GLIBC_2.34)(64bit)" = "*"
+
+[build-dependencies]
+winresource = "0.1"
+
+[dev-dependencies]
+tempfile = "3"
+inxt-mock = { path = "../inxt-mock" }

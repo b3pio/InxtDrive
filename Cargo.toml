@@ -1,0 +1,59 @@
+[workspace]
+resolver = "2"
+members = ["crates/inxt-api", "crates/inxt-core", "crates/inxt-winfsp", "crates/inxt-fuse", "crates/inxtdrive", "crates/inxt-mock", "crates/inxt-overlay"]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+rust-version = "1.87"
+
+[workspace.dependencies]
+inxt-api = { path = "crates/inxt-api" }
+inxt-core = { path = "crates/inxt-core" }
+inxt-winfsp = { path = "crates/inxt-winfsp" }
+inxt-fuse = { path = "crates/inxt-fuse" }
+
+anyhow = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util", "fs", "signal"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream", "http2", "charset"] }
+futures-util = "0.3"
+bytes = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde", "std"] }
+url = "2"
+hex = "0.4"
+base64 = "0.22"
+rand = "0.8"
+aes = "0.8"
+aes-gcm = "0.10"
+ctr = "0.9"
+cbc = { version = "0.1", features = ["alloc"] }
+sha1 = "0.10"
+sha2 = "0.10"
+md-5 = "0.10"
+ripemd = "0.1"
+pbkdf2 = { version = "0.12", features = ["hmac"] }
+hmac = "0.12"
+bip39 = { version = "2", default-features = false, features = ["std"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+parking_lot = "0.12"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+tracing-appender = "0.2"
+toml = "0.8"
+dirs = "5"
+widestring = "1"
+windows = "0.61"
+winfsp = { version = "0.13.2", default-features = false, features = ["notify", "delayload", "system"] }
+
+[patch.crates-io]
+winfsp-sys = { path = "vendor/winfsp-sys" }
+
+[profile.release]
+lto = "thin"
+codegen-units = 4
+strip = "symbols"
+panic = "unwind"

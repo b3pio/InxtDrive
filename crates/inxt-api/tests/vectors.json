@@ -1,0 +1,31 @@
+{
+  "share": {
+    "bucket_key_hex": "f62b1c1281d03f220e3933fee37a90f1e4e3328672aa1d6ba09d635c26cec08d",
+    "code": "Ab3_-x9Q",
+    "salt_hex": "07070707070707070707070707070707070707070707070707070707070707070707070707070707070707070707070707070707070707070707070707070707",
+    "iv_hex": "000102030405060708090a0b0c0d0e0f",
+    "encrypted_key": "BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwABAgMEBQYHCAkKCwwNDg9HmNZ5sd0PP4104I/qKf4pPlub8UupO0hcHrkLHsFxbkpCtHdnjLA7bvUpd2oCxDto5CWxPqvcmWnOLeYXtGVsjQOBSoobfVvg4eBXYsflHg=="
+  },
+  "openssl": {
+    "secret": "6KYQBP847D4ATSFA",
+    "plain": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+    "salt_hex": "0102030405060708",
+    "cipher_hex": "53616c7465645f5f01020304050607084cfce9e79e463649676aeab0e168da5d0194fefe69d2e61f9549ee49913084e5f05b65ff42e4b9cc9bac9dc9939c64aa"
+  },
+  "password": {
+    "password": "correct horse",
+    "salt_hex": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+    "hash_hex": "c5e8e0b35d24f450fa2f5e31b2efa12c6311f396c00a10802d241393ca11a1ba"
+  },
+  "keys": {
+    "mnemonic": "legal winner thank year wave sausage worth useful legal winner thank yellow",
+    "bucket_id": "1f7a5a8c3e0d9b6f4a2c1e0d",
+    "index_hex": "e3ac6e94ff276cedb06b758c58ccb2cb51432f9680fbd9cc713971de86ef5482",
+    "seed_hex": "878386efb78845b3355bd15ea4d39ef97d179cb712b77d5c12b6be415fffeffe5f377ba02bf3f8544ab800b955e51fbff09828f682052a20faa6addbbddfb096",
+    "file_key_hex": "b43e32c81d64e1687d6f00c0bb92efe13ced5161139bca62914cb896079e8bb6",
+    "plain_len": 70000,
+    "cipher_sha256_hex": "9f86ceed9f009a28be341cef7b76aff215205ce2de346f40c6398c484a3aa9e3",
+    "cipher_window_hex": "b50324b5bca252a8690678e7803f494eaaf93da6bbe23e9fe9137a9c37e8bab9b14818d35d5e7f95b5964bd9afbff3a90b1ba16e5231db5f4bf886aedda2d738887f326af401d24ec9cccc2ae25c0744d7ee77fad72b7e77ed1df171d8bf6421757a2a5a",
+    "content_hash_hex": "0e01b26e688fec339828ee99624034530ca22d45"
+  }
+}

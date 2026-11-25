@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=InxtDrive
+GenericName=Cloud drive
+Comment=Your Internxt cloud as a folder (unofficial client)
+Exec=inxtdrive
+Icon=inxtdrive
+Terminal=false
+Categories=Network;FileTransfer;
+Keywords=internxt;cloud;sync;drive;storage;
+StartupNotify=false
+StartupWMClass=inxtdrive

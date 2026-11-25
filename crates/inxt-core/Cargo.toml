@@ -1,0 +1,29 @@
+[package]
+name = "inxt-core"
+description = "Platform-independent virtual drive engine: metadata tree, block cache, sync queue"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+inxt-api.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+chrono.workspace = true
+rusqlite.workspace = true
+parking_lot.workspace = true
+tracing.workspace = true
+hex.workspace = true
+rand.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows = { workspace = true, features = ["Win32_Foundation", "Win32_System_Ioctl", "Win32_System_IO"] }
+
+[dev-dependencies]
+tempfile = "3"
+inxt-mock = { path = "../inxt-mock" }
+tracing-subscriber.workspace = true

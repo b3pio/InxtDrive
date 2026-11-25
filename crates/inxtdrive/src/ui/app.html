@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>InxtDrive</title>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f5f6f8;--panel:#fff;--side:#eceff3;--text:#151922;--muted:#5d6675;--faint:#8a93a3;--line:#dfe3ea;
+  --accent:#0066ff;--accent-ink:#fff;--accent-weak:#e5eeff;--ok:#16a34a;--ok-weak:#dcfce7;--warn:#b45309;--warn-weak:#fef3c7;
+  --bad:#c2281d;--bad-weak:#fde4e1;--track:#e6e9ef;--shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.06);
+  --font:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  color-scheme:dark;
+  --bg:#101216;--panel:#171a20;--side:#13161b;--text:#e8ebf0;--muted:#9aa3b2;--faint:#6f7887;--line:#262b34;
+  --accent:#3d8bff;--accent-ink:#fff;--accent-weak:#132544;--ok:#34c76f;--ok-weak:#123222;--warn:#e3a33b;--warn-weak:#3a2a10;
+  --bad:#ff7b6e;--bad-weak:#3d1714;--track:#262b34;--shadow:none;
+}}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font:14px/1.45 var(--font);-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:224px 1fr;height:100vh}
+.side{background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 12px}
+.brand{display:flex;align-items:center;gap:10px;padding:2px 10px 18px}
+.brand svg{width:30px;height:30px;flex:none}
+.brand b{font-size:15px;letter-spacing:.1px}
+.brand small{display:block;color:var(--muted);font-size:11.5px;margin-top:-2px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;align-items:center;gap:11px;border:0;background:none;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--muted);text-align:left;position:relative}
+.nav button svg{width:18px;height:18px;flex:none}
+.nav button:hover{background:color-mix(in srgb,var(--text) 6%,transparent);color:var(--text)}
+.nav button.on{background:var(--accent-weak);color:var(--accent);font-weight:600}
+.nav .dot{margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.side .foot{margin-top:auto;padding:10px;color:var(--faint);font-size:12px}
+.main{overflow:auto;position:relative}
+.wrap{max-width:780px;padding:26px 34px 110px}
+h1{font-size:22px;font-weight:650;margin:0 0 4px;letter-spacing:-.2px}
+.sub{color:var(--muted);margin:0 0 22px}
+h2{font-size:13px;font-weight:650;margin:26px 0 10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+.card+.card{margin-top:14px}
+.pad{padding:18px 20px}
+.row{display:flex;align-items:center;gap:18px;padding:14px 20px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row .l{flex:1;min-width:0}
+.row .l b{display:block;font-weight:600}
+.row .l span{display:block;color:var(--muted);font-size:12.5px;margin-top:1px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel);padding:7px 14px;border-radius:8px;cursor:pointer;font-weight:550;white-space:nowrap}
+.btn:hover{border-color:color-mix(in srgb,var(--text) 22%,var(--line))}
+.btn svg{width:16px;height:16px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.danger{color:var(--bad)}
+.btn.danger.solid{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn.ghost{border-color:transparent;background:none;padding:6px 10px}
+.btn.ghost:hover{background:color-mix(in srgb,var(--text) 7%,transparent)}
+.btn[disabled]{opacity:.5;cursor:default}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.hero{display:flex;align-items:center;gap:16px;padding:20px}
+.badge{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:none}
+.badge svg{width:24px;height:24px}
+.st-ok{background:var(--ok-weak);color:var(--ok)}.st-sync{background:var(--accent-weak);color:var(--accent)}
+.st-warn{background:var(--warn-weak);color:var(--warn)}.st-bad{background:var(--bad-weak);color:var(--bad)}.st-off{background:var(--track);color:var(--muted)}
+.hero .t{flex:1;min-width:0}
+.hero .t b{display:block;font-size:17px;font-weight:650}
+.hero .t span{color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.grid2 .card{margin:0}
+.meter .k{color:var(--muted);font-size:12.5px}
+.meter .v{font-size:18px;font-weight:650;margin:2px 0 10px}
+.meter .v small{font-size:13px;font-weight:500;color:var(--muted)}
+.bar{height:7px;background:var(--track);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:9px;transition:width .4s}
+.bar.thin{height:5px}
+.meter .act{margin-top:12px}
+.list .item{display:flex;align-items:center;gap:12px;padding:10px 20px;border-top:1px solid var(--line)}
+.list .item:first-child{border-top:0}
+.ico{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--accent-weak);color:var(--accent);flex:none}
+.ico svg{width:18px;height:18px}
+.ico.f{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.item .m{flex:1;min-width:0}
+.item .m>b{display:block;font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .m>span{display:block;color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .r{color:var(--muted);font-size:12.5px;white-space:nowrap}
+.item .m .bar{margin-top:6px}
+.empty{padding:28px 20px;text-align:center;color:var(--muted)}
+.empty svg{width:34px;height:34px;color:var(--faint);display:block;margin:0 auto 8px}
+.err{color:var(--bad)}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:20px;background:var(--accent-weak);color:var(--accent);margin-left:6px;vertical-align:1px}
+.tag.g{background:var(--track);color:var(--muted)}
+.tag.w{background:var(--warn-weak);color:var(--warn)}
+.sw{position:relative;width:40px;height:22px;flex:none}
+.sw input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.sw i{position:absolute;inset:0;background:var(--track);border-radius:22px;transition:.15s;pointer-events:none}
+.sw i:after{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.sw input:checked+i{background:var(--accent)}
+.sw input:checked+i:after{transform:translateX(18px)}
+.sw input:disabled+i{opacity:.45}
+.sw input:focus-visible+i{outline:2px solid var(--accent);outline-offset:2px}
+select,.inp{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-width:150px}
+.inp{width:100%}
+select:focus,.inp:focus{outline:2px solid color-mix(in srgb,var(--accent) 55%,transparent);border-color:var(--accent)}
+.range{display:flex;align-items:center;gap:12px;min-width:260px}
+.range input[type=range]{flex:1;accent-color:var(--accent)}
+.range .inp{width:78px;min-width:0;text-align:right}
+.pathbox{display:flex;gap:8px;align-items:center;margin-top:10px}
+.pathbox code{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font:12.5px/1.4 Consolas,ui-monospace,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.note{color:var(--muted);font-size:12.5px;margin-top:8px}
+.savebar{position:fixed;left:224px;right:0;bottom:0;padding:12px 34px;background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;align-items:center;gap:12px;transform:translateY(110%);transition:transform .18s}
+.savebar.show{transform:none}
+.savebar .msg{flex:1;color:var(--muted)}
+.savebar .msg b{color:var(--text)}
+#toasts{position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:8px;z-index:9;pointer-events:none}
+.toast{background:var(--text);color:var(--bg);padding:9px 14px;border-radius:9px;box-shadow:0 6px 24px rgba(0,0,0,.18);font-weight:550;max-width:420px;animation:tin .18s ease-out}
+.toast.bad{background:var(--bad);color:#fff}
+@keyframes tin{from{opacity:0;transform:translateY(6px)}}
+.spin{width:18px;height:18px;border:2.5px solid var(--track);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite;display:inline-block;vertical-align:-4px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.avatar{width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:20px;font-weight:650;flex:none}
+.confirm{display:inline-flex;gap:6px;align-items:center}
+.confirm span{color:var(--bad);font-weight:600;font-size:12.5px}
+/* share window */
+.share{display:flex;flex-direction:column;height:100vh;padding:22px 24px}
+.share .head{display:flex;gap:14px;align-items:center}
+.share .head .ico{width:42px;height:42px;border-radius:10px}
+.share .head .ico svg{width:22px;height:22px}
+.share .head .m{min-width:0}
+.share .head b{display:block;font-size:16px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.share .head span{display:block;color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.share .body{flex:1;margin-top:22px}
+.linkrow{display:flex;gap:8px}
+.linkrow .inp{font:12.5px/1.4 Consolas,ui-monospace,monospace}
+.share .foot{display:flex;align-items:center;gap:8px;padding-top:14px;border-top:1px solid var(--line)}
+.share .foot .sp{flex:1}
+.okline{color:var(--ok);font-size:12.5px;font-weight:600;margin-top:8px;min-height:18px}
+.state{display:flex;gap:12px;align-items:center;color:var(--muted);padding:18px 0}
+.pw{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.pw .rowx{display:flex;align-items:center;gap:12px}
+.pw .rowx .l{flex:1}
+.pw .rowx .l b{display:block;font-weight:600}
+.pw .rowx .l span{color:var(--muted);font-size:12.5px}
+.pw .set{display:flex;gap:8px;margin-top:10px}
+@media (max-width:820px){.app{grid-template-columns:72px 1fr}.nav button span,.brand div,.side .foot{display:none}.savebar{left:72px}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="toasts" role="status" aria-live="polite"></div>
+<script>
+'use strict';
+const VIEW = window.INXT_VIEW || (location.hash === '#share' ? 'share' : 'settings');
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function post(cmd, data = {}) {
+  const m = JSON.stringify({ cmd, ...data });
+  if (window.ipc) window.ipc.postMessage(m); else demoPost(cmd, data);
+}
+const act = (name, arg) => post('action', { name, arg });
+function bytes(b) {
+  b = Number(b) || 0;
+  const u = ['B', 'KB', 'MB', 'GB', 'TB'];
+  let i = 0;
+  while (b >= 1024 && i < u.length - 1) { b /= 1024; i++; }
+  return i === 0 ? `${b} B` : `${b.toFixed(b < 10 ? 1 : 0)} ${u[i]}`;
+}
+function ago(t) {
+  if (!t) return '';
+  const ms = typeof t === 'number' ? t : Date.parse(t);
+  if (!ms) return '';
+  const s = Math.max(0, (Date.now() - ms) / 1000);
+  if (s < 50) return 'just now';
+  if (s < 3600) return `${Math.round(s / 60)} min ago`;
+  if (s < 86400) return `${Math.round(s / 3600)} h ago`;
+  const d = new Date(ms);
+  return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: d.getFullYear() === new Date().getFullYear() ? undefined : 'numeric' });
+}
+const DEMO_LINUX = !window.ipc && location.search.includes('linux');
+const WIN = () => (S.meta?.platform || (DEMO_LINUX ? 'linux' : 'windows')) === 'windows';
+const PC = () => WIN() ? 'this PC' : 'this computer';
+const SEP = () => WIN() ? '\\' : '/';
+const parts = (p) => String(p || '').split(/[\\/]/).filter(Boolean);
+const baseName = (p) => parts(p).pop() || p;
+const dirName = (p) => { const a = parts(p); a.pop(); return a.length ? SEP() + a.join(SEP()) : 'Drive root'; };
+function toast(text, bad) {
+  const t = document.createElement('div');
+  t.className = 'toast' + (bad ? ' bad' : '');
+  t.textContent = text;
+  $('#toasts').appendChild(t);
+  setTimeout(() => t.remove(), bad ? 6000 : 3200);
+}
+
+const I = {
+  logo: '<svg viewBox="0 0 32 32"><defs><linearGradient id="logo-tile" x1="1" y1="1" x2="31" y2="31" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#3d8bff"/><stop offset="1" stop-color="#0052d9"/></linearGradient></defs><rect x="1" y="1" width="30" height="30" rx="7" fill="url(#logo-tile)"/><g fill="#fff"><circle cx="16.63" cy="15.12" r="7.04"/><circle cx="8.93" cy="19.3" r="4.62"/><circle cx="23.89" cy="19.74" r="4.18"/><rect x="8.93" y="16" width="14.96" height="7.92"/></g><path d="M13.22 14.35l6.38 6.38M19.6 14.35l-6.38 6.38" stroke="url(#logo-tile)" stroke-width="2.09" stroke-linecap="round"/></svg>',
+  overview: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/></svg>',
+  shared: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
+  general: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>',
+  drive: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M5 13l2.5-8h9L19 13"/><path d="M16 16.5h.01"/></svg>',
+  account: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
+  advanced: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13.5 6l-3 12"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  sync: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.3-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.5L20 16M20 20v-4h-4"/></svg>',
+  pause: '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>',
+  play: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
+  cloudoff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l18 18M7.5 8.3A5 5 0 0 0 7 18h10.5M20.6 15.6A4 4 0 0 0 17 10h-.5A6.5 6.5 0 0 0 10.4 5.3"/></svg>',
+  alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 8v5M12 16.5h.01"/><circle cx="12" cy="12" r="9"/></svg>',
+  user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
+  file: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>',
+  folder: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  open: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>',
+  refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>',
+  empty: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
+};
+
+/* ---------------- settings window ---------------- */
+const TABS = [
+  ['overview', 'Overview'], ['shared', 'Shared'], ['general', 'General'],
+  ['drive', 'Drive & storage'], ['account', 'Account'], ['advanced', 'Advanced'],
+];
+const S = { meta: null, saved: null, draft: null, status: null, tab: window.INXT_TAB || (location.hash.slice(1) || 'overview'), shared: null, sharedBusy: false, confirm: null };
+
+function shell() {
+  $('#root').innerHTML = `
+  <div class="app">
+    <aside class="side">
+      <div class="brand">${I.logo}<div><b>InxtDrive</b><small>for Internxt</small></div></div>
+      <nav class="nav">${TABS.map(([k, t]) => `<button data-tab="${k}">${I[k]}<span>${t}</span></button>`).join('')}</nav>
+      <div class="foot" id="ver"></div>
+    </aside>
+    <main class="main"><div class="wrap" id="page"></div>
+      <div class="savebar" id="savebar"><div class="msg" id="savemsg"></div>
+        <button class="btn" id="discard">Discard</button><button class="btn primary" id="save">Save changes</button></div>
+    </main>
+  </div>`;
+  $('.nav').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) selectTab(b.dataset.tab); });
+  $('#discard').onclick = () => { S.draft = structuredClone(S.saved); render(); };
+  $('#save').onclick = () => { $('#save').disabled = true; post('save', { settings: S.draft }); };
+}
+
+function selectTab(t) {
+  if (!TABS.some(([k]) => k === t)) t = 'overview';
+  S.tab = t;
+  S.confirm = null;
+  if (t === 'shared' && !S.shared && !S.sharedBusy) loadShared();
+  render();
+}
+
+function dirty() { return S.saved && JSON.stringify(S.saved) !== JSON.stringify(S.draft); }
+const RECONNECT = ['drive_letter', 'mount_dir', 'volume_label', 'filesystem_name', 'mark_cloud_files_offline', 'cache_dir'];
+function renderSaveBar() {
+  const bar = $('#savebar');
+  if (!bar) return;
+  const d = dirty();
+  bar.classList.toggle('show', d);
+  if (d) {
+    const recon = RECONNECT.some((k) => S.saved[k] !== S.draft[k]);
+    $('#savemsg').innerHTML = `<b>Unsaved changes.</b> ${recon ? 'Saving reconnects the drive for a moment.' : ''}`;
+    $('#save').disabled = false;
+  }
+}
+
+function render() {
+  if (!S.meta) { $('#page').innerHTML = '<div class="state"><span class="spin"></span> Loading…</div>'; return; }
+  document.querySelectorAll('.nav button').forEach((b) => b.classList.toggle('on', b.dataset.tab === S.tab));
+  $('#ver').textContent = `Version ${S.meta.version}`;
+  const page = $('#page');
+  page.innerHTML = ({ overview: pOverview, shared: pShared, general: pGeneral, drive: pDrive, account: pAccount, advanced: pAdvanced })[S.tab]();
+  bindForm(page);
+  renderSaveBar();
+}
+
+function stateOf(st) {
+  const p = st?.phase?.kind;
+  const s = st?.status;
+  if (p === 'signed_out') return ['off', I.user, 'Not signed in', 'Sign in to connect your Internxt account.'];
+  if (p === 'signing_in') return ['sync', I.user, 'Waiting for sign-in', 'Finish signing in in your browser.'];
+  if (p === 'starting') return ['sync', I.sync, 'Starting…', ''];
+  if (p === 'indexing') return ['sync', I.sync, 'Preparing your drive…', s?.items > 1 ? `${s.items.toLocaleString()} items found so far` : 'Reading your files from Internxt'];
+  if (p === 'busy') return ['sync', I.sync, st.phase.message, 'This only takes a moment.'];
+  if (p === 'failed') return ['bad', I.alert, 'Something went wrong', st.phase.message];
+  if (!s) return ['sync', I.sync, 'Starting…', ''];
+  const where = st.mount ? (WIN() ? `Drive ${st.mount}` : st.mount) : '';
+  if (s.auth_failed) return ['bad', I.alert, 'Session expired', 'Sign in again to keep syncing.'];
+  if (st.paused) return ['warn', I.pause, 'Syncing paused', `${where} · Changes are kept and upload when you resume.`];
+  if (!s.online) return ['warn', I.cloudoff, 'Offline', `${where} · Changes will sync when you're back online.`];
+  if (s.uploading > 0) {
+    const pct = s.upload_bytes_total ? Math.min(100, Math.round((s.upload_bytes_done / s.upload_bytes_total) * 100)) : 0;
+    return ['sync', I.sync, `Uploading ${s.uploading} ${s.uploading === 1 ? 'file' : 'files'} · ${pct}%`, where];
+  }
+  const pend = s.pending_uploads + s.pending_ops;
+  if (pend > 0) return ['sync', I.sync, `${pend} ${pend === 1 ? 'change' : 'changes'} waiting to sync`, where];
+  if (s.downloads_active > 0) return ['sync', I.sync, 'Downloading…', where];
+  return ['ok', I.check, 'Up to date', `${where} · Everything is in your Internxt account`];
+}
+
+function pOverview() {
+  const st = S.status || {};
+  const [cls, icon, title, sub] = stateOf(st);
+  const ready = st.phase?.kind === 'ready';
+  let actions = '';
+  if (st.phase?.kind === 'signed_out' || st.status?.auth_failed) actions = `<button class="btn primary" data-act="sign_in">Sign in</button>`;
+  else if (st.phase?.kind === 'signing_in') actions = `<button class="btn" data-act="sign_in">Open sign-in again</button>`;
+  else if (ready) actions = `<button class="btn primary" data-act="open_drive">${I.open}Open drive</button>
+      <button class="btn" data-act="pause" data-arg="${!st.paused}">${st.paused ? I.play + 'Resume' : I.pause + 'Pause'}</button>`;
+  const used = st.usage?.used || 0, limit = st.usage?.limit || 0;
+  const cache = st.status?.cache_bytes || 0, climit = st.cache_limit || 1;
+  const a = st.activity || { uploading: [], queued: [], queued_total: 0, recent: [], problems: [] };
+  return `
+  <h1>Overview</h1><p class="sub">${esc(st.email || '')}</p>
+  <div class="card"><div class="hero"><div class="badge st-${cls}">${icon}</div>
+    <div class="t"><b>${esc(title)}</b><span>${esc(sub)}</span></div><div class="btns">${actions}</div></div></div>
+  ${ready ? `<div class="grid2">
+    <div class="card pad meter"><div class="k">Internxt storage</div>
+      <div class="v">${bytes(used)}${limit ? ` <small>of ${bytes(limit)}</small>` : ''}</div>
+      <div class="bar"><i style="width:${limit ? Math.min(100, (used / limit) * 100) : 0}%"></i></div></div>
+    <div class="card pad meter"><div class="k">Local copy on ${PC()}</div>
+      <div class="v">${bytes(cache)} <small>of ${bytes(climit)} limit</small></div>
+      <div class="bar"><i style="width:${Math.min(100, (cache / climit) * 100)}%"></i></div>
+      <div class="act"><button class="btn" data-act="free_up">Free up space</button></div></div>
+  </div>` : ''}
+  ${ready ? activity(a) : ''}`;
+}
+
+function activity(a) {
+  const blocks = [];
+  if (a.problems.length) blocks.push(`<h2>Needs attention</h2><div class="card list">${a.problems.map((p) => `
+    <div class="item"><div class="ico" style="background:var(--bad-weak);color:var(--bad)">${I.alert}</div>
+      <div class="m"><b>${esc(baseName(p.path))}</b><span class="err">${esc(p.message)}</span></div><div class="r">${ago(p.at)}</div></div>`).join('')}</div>`);
+  if (a.uploading.length) blocks.push(`<h2>Uploading now</h2><div class="card list">${a.uploading.map((u) => {
+    const pct = u.total ? Math.round((u.done / u.total) * 100) : 100;
+    return `<div class="item"><div class="ico">${I.sync}</div><div class="m"><b>${esc(baseName(u.path))}</b>
+      <span>${esc(dirName(u.path))}</span><div class="bar thin"><i style="width:${pct}%"></i></div></div>
+      <div class="r">${bytes(u.done)} / ${bytes(u.total)}</div></div>`;
+  }).join('')}</div>`);
+  const waiting = a.queued.filter((q) => !a.uploading.some((u) => u.path === q));
+  if (waiting.length) blocks.push(`<h2>Waiting to upload · ${a.queued_total}</h2><div class="card list">${waiting.slice(0, 8).map((q) => `
+    <div class="item"><div class="ico f">${I.file}</div><div class="m"><b>${esc(baseName(q))}</b><span>${esc(dirName(q))}</span></div></div>`).join('')}
+    ${a.queued_total > 8 ? `<div class="item"><div class="m"><span>…and ${a.queued_total - Math.min(8, waiting.length)} more</span></div></div>` : ''}</div>`);
+  blocks.push(`<h2>Recently uploaded</h2><div class="card list">${a.recent.length ? a.recent.slice(0, 12).map((r) => `
+    <div class="item"><div class="ico" style="background:var(--ok-weak);color:var(--ok)">${I.check}</div>
+      <div class="m"><b>${esc(baseName(r.path))}</b><span>${esc(dirName(r.path))} · ${bytes(r.size)}</span></div>
+      <div class="r">${ago(r.at)}</div></div>`).join('') : `<div class="empty">Files you add or change on the drive show up here once they reach Internxt.</div>`}</div>`);
+  return blocks.join('');
+}
+
+function loadShared() {
+  S.sharedBusy = true;
+  post('shared');
+  if (S.tab === 'shared') render();
+}
+
+function pShared() {
+  const head = `<div style="display:flex;align-items:center;gap:12px"><div style="flex:1"><h1>Shared</h1>
+    <p class="sub">Links and folders you share from Internxt, and items shared with you.</p></div>
+    <button class="btn" id="refresh"${S.sharedBusy ? ' disabled' : ''}>${I.refresh}Refresh</button></div>`;
+  if (S.sharedBusy && !S.shared) return head + `<div class="card"><div class="state" style="padding:22px 20px"><span class="spin"></span> Loading shared items…</div></div>`;
+  if (S.shared?.error) return head + `<div class="card pad err">${esc(S.shared.error)}</div>`;
+  const items = S.shared?.items || [];
+  if (!items.length) return head + `<div class="card"><div class="empty">${I.empty}Nothing is shared yet.<br>Right-click a file or folder on the drive and choose <b>Share link…</b></div></div>`;
+  return head + `<div class="card list">${items.map((it) => {
+    const where = it.shared_with_me ? `Shared with you${it.owner ? ' by ' + esc(it.owner) : ''}` : (it.local ? esc(it.local) : 'Not on your drive');
+    const confirming = S.confirm === 'stop:' + it.uuid;
+    return `<div class="item" data-uuid="${esc(it.uuid)}" data-dir="${it.is_dir}">
+      <div class="ico${it.is_dir ? ' f' : ''}">${it.is_dir ? I.folder : I.file}</div>
+      <div class="m"><b>${esc(it.name)}${it.shared_with_me ? '<span class="tag g">With you</span>' : ''}</b><span>${where}${it.is_dir ? '' : ' · ' + bytes(it.size)}</span></div>
+      <div class="r">${ago(it.shared_at)}</div>
+      <div class="btns">${confirming ? `<span class="confirm"><span>Stop sharing?</span>
+          <button class="btn danger solid" data-do="stop">Stop</button><button class="btn ghost" data-do="cancel">Cancel</button></span>`
+        : `${it.shared_with_me ? '' : `<button class="btn" data-do="copy" title="Copy public link">${I.copy}Copy link</button>`}
+           ${it.local ? `<button class="btn ghost" data-do="reveal" title="Show in drive">${I.open}</button>` : ''}
+           ${it.shared_with_me ? '' : `<button class="btn ghost danger" data-do="ask">Stop</button>`}`}</div></div>`;
+  }).join('')}</div>`;
+}
+
+function toggle(key, label, desc, extra = '') {
+  return `<div class="row"><div class="l"><b>${label}</b><span>${desc}</span></div>
+    <label class="sw"><input type="checkbox" data-k="${key}" ${S.draft[key] ? 'checked' : ''} ${extra}><i></i></label></div>`;
+}
+
+function pGeneral() {
+  const m = S.meta;
+  if (!WIN()) return `<h1>General</h1><p class="sub">How InxtDrive behaves on ${PC()}.</p>
+  <div class="card">
+    ${toggle('start_with_windows', 'Start when you log in', 'Connect the drive automatically when you log in to your desktop.')}
+  </div>`;
+  return `<h1>General</h1><p class="sub">How InxtDrive behaves on this PC.</p>
+  <div class="card">
+    ${toggle('start_with_windows', 'Start with Windows', 'Connect the drive automatically when you sign in to Windows.')}
+    ${toggle('status_icons', 'Status icons in Explorer', m.status_icons_installed
+      ? 'Show a check on files that are in your Internxt account and arrows on files still uploading.'
+      : 'Not installed in this copy. Reinstall InxtDrive with the installer to enable them.', m.status_icons_installed ? '' : 'disabled')}
+    ${toggle('mark_cloud_files_offline', 'Don\'t download files just to preview them', 'Explorer and antivirus skip files that are not on this PC yet. Thumbnails only appear for files already downloaded.')}
+  </div>`;
+}
+
+function pDrive() {
+  const m = S.meta, d = S.draft;
+  const letters = m.letters.map((l) => `<option value="${l}" ${l === d.drive_letter ? 'selected' : ''}>${l}:</option>`).join('');
+  const polls = [[15, 'Every 15 seconds'], [30, 'Every 30 seconds'], [60, 'Every minute'], [300, 'Every 5 minutes'], [900, 'Every 15 minutes']];
+  if (!polls.some(([v]) => v === d.poll_interval_secs)) polls.push([d.poll_interval_secs, `Every ${d.poll_interval_secs} seconds`]);
+  const dir = d.cache_dir || '';
+  const mdir = d.mount_dir || '';
+  const driveCard = WIN() ? `
+    <div class="row"><div class="l"><b>Drive letter</b><span>Letters already in use are not listed.</span></div>
+      <select data-k="drive_letter">${letters}</select></div>
+    <div class="row"><div class="l"><b>Drive name</b><span>Shown in Explorer next to the letter.</span></div>
+      <input class="inp" style="max-width:220px" maxlength="32" data-k="volume_label" value="${esc(d.volume_label)}"></div>` : `
+    <div class="row" style="display:block"><div class="l"><b>Folder</b><span>Where your Internxt files appear. It must be empty.</span></div>
+      <div class="pathbox"><code title="${esc(mdir || m.default_mount_dir || '')}">${esc(mdir || m.default_mount_dir || '~/Internxt')}</code>
+        <button class="btn" data-act="pick_mount_dir">Change…</button>${mdir ? '<button class="btn ghost" id="mountdef">Use default</button>' : ''}</div></div>
+    <div class="row"><div class="l"><b>Name in the sidebar</b><span>Shown in the file manager's list of places.</span></div>
+      <input class="inp" style="max-width:220px" maxlength="32" data-k="volume_label" value="${esc(d.volume_label)}"></div>`;
+  return `<h1>Drive &amp; storage</h1><p class="sub">${WIN() ? 'The drive letter' : 'Where your drive appears'} and how much of your cloud is kept on ${PC()}.</p>
+  <h2>Drive</h2><div class="card">${driveCard}
+  </div>
+  <h2>Local copy</h2><div class="card">
+    <div class="row"><div class="l"><b>Space it may use</b><span>Files you haven't opened in a while are removed first. Files kept on this device and changes not uploaded yet are never removed.</span></div>
+      <div class="range"><input type="range" min="1" max="500" step="1" data-k="cache_size_gb" value="${Math.min(500, d.cache_size_gb)}">
+        <input class="inp" type="number" min="1" max="10000" data-k="cache_size_gb" value="${d.cache_size_gb}"> GB</div></div>
+    <div class="row" style="display:block"><div class="l"><b>Location</b><span>Pick a folder on a bigger disk if you like. InxtDrive creates its own subfolder there.</span></div>
+      <div class="pathbox"><code title="${esc(dir || m.default_cache_dir || '')}">${esc(dir || m.default_cache_dir || 'Default (app data folder)')}</code>
+        <button class="btn" data-act="pick_cache_dir">Change…</button>${dir ? '<button class="btn ghost" id="cachedef">Use default</button>' : ''}</div></div>
+  </div>
+  <h2>Sync</h2><div class="card">
+    <div class="row"><div class="l"><b>Check for changes from other devices</b><span>Folders you open are refreshed right away regardless.</span></div>
+      <select data-k="poll_interval_secs" data-num>${polls.map(([v, t]) => `<option value="${v}" ${v === d.poll_interval_secs ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
+    <div class="row"><div class="l"><b>Files uploaded at once</b><span>More is faster for many small files; fewer leaves bandwidth for other apps.</span></div>
+      <select data-k="upload_concurrency" data-num>${[1, 2, 3, 4, 6, 8].map((v) => `<option value="${v}" ${v === d.upload_concurrency ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+  </div>`;
+}
+
+function pAccount() {
+  const st = S.status || {};
+  const email = st.email || S.meta.email;
+  const signedIn = !!email && st.phase?.kind !== 'signed_out';
+  const used = st.usage?.used || 0, limit = st.usage?.limit || 0;
+  if (!signedIn) return `<h1>Account</h1><p class="sub">Connect your Internxt account.</p>
+    <div class="card pad"><div class="hero" style="padding:0"><div class="badge st-off">${I.user}</div>
+      <div class="t"><b>Not signed in</b><span>Sign in through your browser. Two-factor authentication works there too.</span></div>
+      <button class="btn primary" data-act="sign_in">Sign in</button></div></div>`;
+  const confirming = S.confirm === 'signout';
+  return `<h1>Account</h1><p class="sub">The Internxt account this drive is connected to.</p>
+  <div class="card"><div class="hero"><div class="avatar">${esc(email[0].toUpperCase())}</div>
+    <div class="t"><b>${esc(email)}</b><span>${limit ? `${bytes(used)} of ${bytes(limit)} used` : 'Internxt account'}</span>
+    ${limit ? `<div class="bar" style="margin-top:8px;max-width:340px"><i style="width:${Math.min(100, (used / limit) * 100)}%"></i></div>` : ''}</div>
+    <button class="btn" data-act="open_web">${I.open}Open Internxt</button></div>
+    <div class="row"><div class="l"><b>Sign out</b><span>Removes the drive and its local copy from ${PC()}. Your files stay in your Internxt account.</span></div>
+      ${confirming ? `<span class="confirm"><span>${(st.status?.pending_uploads || 0) + (st.status?.pending_ops || 0) > 0 ? 'Unsynced changes will be lost.' : 'Sure?'}</span>
+        <button class="btn danger solid" id="signout">Sign out</button><button class="btn ghost" id="nosignout">Cancel</button></span>`
+        : `<button class="btn danger" id="asksignout">Sign out…</button>`}</div>
+  </div>`;
+}
+
+function pAdvanced() {
+  const d = S.draft, m = S.meta;
+  const sel = (k, opts) => `<select data-k="${k}">${opts.map(([v, t]) => `<option value="${v}" ${v === d[k] ? 'selected' : ''}>${t}</option>`).join('')}</select>`;
+  const confirming = S.confirm === 'explorer';
+  return `<h1>Advanced</h1><p class="sub">Settings most people never need to change.</p>
+  <div class="card">
+    ${WIN() ? `<div class="row"><div class="l"><b>File system name</b><span>What apps see as the drive's format. exFAT tells them not to expect Windows permissions or hidden streams.</span></div>
+      ${sel('filesystem_name', [['exFAT', 'exFAT (recommended)'], ['NTFS', 'NTFS']])}</div>` : ''}
+    <div class="row"><div class="l"><b>Log detail</b><span>Applies after restarting InxtDrive.</span></div>
+      ${sel('log_level', [['warn', 'Warnings only'], ['info', 'Normal'], ['debug', 'Detailed'], ['trace', 'Everything']])}</div>
+    <div class="row" style="display:block"><div class="l"><b>Connection</b><span>Only change these if you know you need to. Applies after restarting InxtDrive.</span></div>
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:8px 12px;align-items:center;margin-top:12px">
+        <span class="note" style="margin:0">API address</span><input class="inp" data-k="gateway_url" value="${esc(d.gateway_url)}">
+        <span class="note" style="margin:0">Web app</span><input class="inp" data-k="web_url" value="${esc(d.web_url)}">
+        <span class="note" style="margin:0">Client name</span><input class="inp" data-k="client_name" value="${esc(d.client_name)}"></div></div>
+  </div>
+  <h2>Maintenance</h2><div class="card">
+    <div class="row"><div class="l"><b>Log files</b><span>Useful when something goes wrong. They never contain your password or recovery words.</span></div>
+      <button class="btn" data-act="open_logs">Open folder</button></div>
+    ${m.status_icons_installed ? `<div class="row"><div class="l"><b>Reload Explorer</b><span>Status icons appear after Explorer restarts. Open Explorer windows close.</span></div>
+      ${confirming ? `<span class="confirm"><button class="btn primary" id="doexplorer">Restart Explorer</button><button class="btn ghost" id="noexplorer">Cancel</button></span>`
+        : `<button class="btn" id="askexplorer">Restart Explorer…</button>`}</div>` : ''}
+    <div class="row"><div class="l"><b>Settings file</b><span>${esc(m.paths.settings)}</span></div>
+      <button class="btn ghost" data-act="open_settings_file">Open</button></div>
+  </div>
+  <h2>About</h2><div class="card pad"><b>InxtDrive ${esc(m.version)}</b>
+    <p class="note" style="margin-top:4px">An unofficial, open-source client for Internxt. Not made or endorsed by Internxt. Free software under the GNU GPL v3 or later.</p></div>`;
+}
+
+function bindForm(page) {
+  page.querySelectorAll('[data-k]').forEach((el) => {
+    const k = el.dataset.k;
+    const ev = el.type === 'checkbox' || el.tagName === 'SELECT' ? 'change' : 'input';
+    el.addEventListener(ev, () => {
+      let v = el.type === 'checkbox' ? el.checked : el.value;
+      if (el.type === 'range' || el.type === 'number' || el.hasAttribute('data-num')) v = Math.max(1, parseInt(v, 10) || 1);
+      S.draft[k] = v;
+      if (k === 'cache_size_gb') page.querySelectorAll('[data-k=cache_size_gb]').forEach((o) => { if (o !== el) o.value = Math.min(o.type === 'range' ? 500 : 1e9, v); });
+      renderSaveBar();
+    });
+  });
+  page.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', () => {
+    const a = b.dataset.act;
+    const arg = b.dataset.arg === undefined ? null : b.dataset.arg === 'true' ? true : b.dataset.arg === 'false' ? false : b.dataset.arg;
+    act(a, arg);
+    if (a === 'pause' && S.status) { S.status.paused = arg; render(); }
+  }));
+  const on = (id, f) => { const e = $('#' + id, page); if (e) e.onclick = f; };
+  on('refresh', loadShared);
+  on('cachedef', () => { S.draft.cache_dir = ''; render(); });
+  on('mountdef', () => { S.draft.mount_dir = ''; render(); });
+  on('asksignout', () => { S.confirm = 'signout'; render(); });
+  on('nosignout', () => { S.confirm = null; render(); });
+  on('signout', () => { S.confirm = null; act('sign_out'); toast('Signing out…'); });
+  on('askexplorer', () => { S.confirm = 'explorer'; render(); });
+  on('noexplorer', () => { S.confirm = null; render(); });
+  on('doexplorer', () => { S.confirm = null; act('restart_explorer'); toast('Restarting Explorer…'); render(); });
+  page.querySelectorAll('.item[data-uuid] [data-do]').forEach((b) => b.addEventListener('click', () => {
+    const row = b.closest('.item');
+    const uuid = row.dataset.uuid, is_dir = row.dataset.dir === 'true';
+    const it = (S.shared?.items || []).find((x) => x.uuid === uuid);
+    switch (b.dataset.do) {
+      case 'copy': b.disabled = true; post('copy_link', { uuid, is_dir }); break;
+      case 'reveal': if (it?.local) act('reveal', it.local); break;
+      case 'ask': S.confirm = 'stop:' + uuid; render(); break;
+      case 'cancel': S.confirm = null; render(); break;
+      case 'stop': b.disabled = true; post('stop_share', { uuid, is_dir }); break;
+    }
+  }));
+}
+
+/* ---------------- share window ---------------- */
+const SH = { info: null, link: null, state: 'creating', error: null, pwOpen: false, confirmStop: false };
+
+function renderShare() {
+  const i = SH.info || { name: '', full: '', is_dir: false };
+  let body = '';
+  if (SH.state === 'creating') body = `<div class="state"><span class="spin"></span>Creating a link…</div>`;
+  else if (SH.state === 'waiting') body = `<div class="state"><span class="spin"></span>Waiting for the upload to finish. The link appears as soon as it's in the cloud.</div>`;
+  else if (SH.state === 'error') body = `<div class="state err" style="align-items:flex-start">${I.alert}<span>${esc(SH.error)}</span></div>`;
+  else if (SH.state === 'stopped') body = `<div class="state">${I.check}<span>Sharing stopped. The link no longer works.</span></div>`;
+  else {
+    const l = SH.link;
+    body = `<div class="note" style="margin:0 0 8px">Anyone with this link can ${i.is_dir ? 'open the folder and download its files' : 'view and download the file'}.</div>
+      <div class="linkrow"><input class="inp" id="url" readonly value="${esc(l.url)}"><button class="btn primary" id="copy">${I.copy}Copy</button></div>
+      <div class="okline" id="copied">${l.copied ? 'Link copied to clipboard' : ''}</div>
+      <div class="pw"><div class="rowx"><div class="l"><b>Require a password</b><span>${l.has_password ? 'Password protected' : 'People need the password to open the link.'}</span></div>
+        <label class="sw"><input type="checkbox" id="pwt" ${SH.pwOpen || l.has_password ? 'checked' : ''}><i></i></label></div>
+        ${SH.pwOpen ? `<div class="set"><input class="inp" id="pw" type="password" placeholder="Password" autocomplete="new-password"><button class="btn" id="pws">Save</button></div>` : ''}</div>`;
+  }
+  const canStop = SH.state === 'ready';
+  $('#root').innerHTML = `<div class="share">
+    <div class="head"><div class="ico${i.is_dir ? ' f' : ''}">${i.is_dir ? I.folder : I.file}</div>
+      <div class="m"><b>${esc(i.name)}</b><span>${esc(i.full)}</span></div></div>
+    <div class="body">${body}</div>
+    <div class="foot">${canStop ? (SH.confirmStop
+      ? `<span class="confirm"><span>Stop sharing?</span><button class="btn danger solid" id="stop">Stop</button><button class="btn ghost" id="nostop">Cancel</button></span>`
+      : `<button class="btn ghost danger" id="askstop">Stop sharing</button>`) : ''}
+      <div class="sp"></div><button class="btn ${SH.state === 'ready' ? 'primary' : ''}" id="done">${SH.state === 'ready' ? 'Done' : 'Close'}</button></div></div>`;
+  const on = (id, f) => { const e = $('#' + id); if (e) e.onclick = f; };
+  on('done', () => post('close'));
+  on('copy', () => { act('copy', SH.link.url); $('#copied').textContent = 'Link copied to clipboard'; });
+  on('askstop', () => { SH.confirmStop = true; renderShare(); });
+  on('nostop', () => { SH.confirmStop = false; renderShare(); });
+  on('stop', () => { $('#stop').disabled = true; post('stop_share', { uuid: SH.link.uuid, is_dir: SH.link.is_dir }); });
+  on('pws', () => { const v = $('#pw').value; if (v) { $('#pws').disabled = true; post('share_password', { uuid: SH.link.uuid, password: v }); } });
+  const t = $('#pwt');
+  if (t) t.onchange = () => {
+    if (t.checked) { SH.pwOpen = true; renderShare(); $('#pw')?.focus(); }
+    else { SH.pwOpen = false; if (SH.link.has_password) post('share_password', { uuid: SH.link.uuid, password: null }); renderShare(); }
+  };
+  const u = $('#url');
+  if (u) u.onfocus = () => u.select();
+}
+
+/* ---------------- messages from the app ---------------- */
+window.inxt = {
+  init(d) {
+    S.meta = d.settings;
+    S.saved = structuredClone(d.settings.settings);
+    S.draft = structuredClone(d.settings.settings);
+    S.status = d.status;
+    render();
+  },
+  status(st) {
+    S.status = st;
+    if (S.tab === 'overview') {
+      const scroll = $('.main')?.scrollTop;
+      const p = $('#page');
+      if (p && !p.contains(document.activeElement)) { render(); if (scroll) $('.main').scrollTop = scroll; }
+    }
+  },
+  saved(r) {
+    if (r.ok) {
+      S.meta = r.settings;
+      S.saved = structuredClone(r.settings.settings);
+      S.draft = structuredClone(r.settings.settings);
+      render();
+      toast(r.message || 'Saved');
+    } else { toast(r.message || 'Could not save', true); $('#save').disabled = false; }
+  },
+  shared(r) {
+    S.sharedBusy = false;
+    S.shared = r.ok ? { items: r.items } : { error: r.message };
+    if (S.tab === 'shared') render();
+  },
+  linkCopied(r) {
+    if (r.ok) toast('Link copied to clipboard'); else toast(r.message || 'Could not get the link', true);
+    if (S.tab === 'shared') render();
+  },
+  shareStopped(r) {
+    if (VIEW === 'share') {
+      if (r.ok) { SH.state = 'stopped'; SH.confirmStop = false; renderShare(); } else { toast(r.message || 'Could not stop sharing', true); renderShare(); }
+      return;
+    }
+    S.confirm = null;
+    if (r.ok) { S.shared.items = S.shared.items.filter((x) => x.uuid !== r.uuid); toast('Sharing stopped'); }
+    else toast(r.message || 'Could not stop sharing', true);
+    render();
+  },
+  picked(p) { if (p) { S.draft.cache_dir = p; render(); } },
+  pickedMount(p) { if (p) { S.draft.mount_dir = p; render(); } },
+  toast(t) { toast(t.text || t, t.bad); },
+  selectTab,
+  initShare(info) { SH.info = info; renderShare(); },
+  shareWaiting() { SH.state = 'waiting'; renderShare(); },
+  shareReady(v) { SH.link = v; SH.state = 'ready'; SH.pwOpen = false; renderShare(); },
+  shareError(m) { SH.state = 'error'; SH.error = m; renderShare(); },
+  passwordSaved(r) {
+    if (r.ok) { SH.link.has_password = r.has_password; SH.pwOpen = false; toast(r.has_password ? 'Password set' : 'Password removed'); }
+    else toast(r.message || 'Could not change the password', true);
+    renderShare();
+  },
+};
+
+/* ---------------- start ---------------- */
+if (VIEW === 'share') { renderShare(); post('init'); }
+else { shell(); render(); post('init'); }
+
+/* Preview in a normal browser (no app attached), for design work. */
+function demoPost(cmd, data) {
+  const now = Date.now();
+  if (cmd === 'init' && VIEW === 'share') {
+    setTimeout(() => inxt.initShare({ name: 'Holiday 2026', full: 'I:\\Photos\\Holiday 2026', is_dir: true }), 0);
+    setTimeout(() => inxt.shareReady({ uuid: 'u1', is_dir: true, url: 'https://share.internxt.com/sh/folder/8yqR2seZThOqF4xNngMjyQ/Ab3_-x9Q', has_password: false, copied: true }), 10);
+  } else if (cmd === 'init') {
+    setTimeout(() => inxt.init({
+      settings: {
+        platform: DEMO_LINUX ? 'linux' : 'windows', default_mount_dir: '/home/you/Internxt',
+        settings: { drive_letter: 'I', mount_dir: '', volume_label: 'Internxt', cache_size_gb: 10, cache_dir: '', upload_concurrency: 4, poll_interval_secs: 30, start_with_windows: true, status_icons: true, mark_cloud_files_offline: false, paused: false, filesystem_name: 'exFAT', log_level: 'info', gateway_url: 'https://gateway.internxt.com', web_url: 'https://drive.internxt.com', client_name: 'inxtdrive' },
+        letters: ['I', 'J', 'K', 'L', 'M', 'N', 'O', 'Q', 'R', 'S', 'T'], autostart: true, status_icons_installed: true, dev_profile: false, version: '1.0.0',
+        email: 'you@example.com', default_cache_dir: 'C:\\Users\\you\\AppData\\Local\\InxtDrive\\accounts\\…\\cache', paths: { settings: 'C:\\Users\\you\\AppData\\Roaming\\InxtDrive\\config.toml', logs: '' },
+      },
+      status: {
+        phase: { kind: 'ready' }, mount: DEMO_LINUX ? '/home/you/Internxt' : 'I:', email: 'you@example.com', paused: false,
+        status: { online: true, auth_failed: false, items: 4821, pending_uploads: 3, pending_ops: 0, uploading: 2, upload_bytes_total: 52428800, upload_bytes_done: 31457280, downloads_active: 0, cache_bytes: 1288490188, last_error: null },
+        activity: {
+          uploading: [{ path: '\\Photos\\IMG_2045.jpg', done: 3145728, total: 4194304 }, { path: '\\Work\\Quarterly report.docx', done: 28311552, total: 48234496 }],
+          queued: ['\\Photos\\IMG_2045.jpg', '\\Work\\Quarterly report.docx', '\\Photos\\IMG_2046.jpg'], queued_total: 3,
+          recent: [{ path: '\\Photos\\IMG_2044.jpg', size: 3984588, at: now - 40000 }, { path: '\\Music\\demo-mix.flac', size: 41943040, at: now - 900000 }, { path: '\\Notes.txt', size: 2048, at: now - 7200000 }],
+          problems: [],
+        },
+        usage: { used: 312 * 1073741824, limit: 2 * 1099511627776 }, cache_limit: 10737418240,
+      },
+    }), 0);
+  } else if (cmd === 'shared') {
+    setTimeout(() => inxt.shared({ ok: true, items: [
+      { uuid: 'a', name: 'Holiday 2026', is_dir: true, size: 0, shared_at: new Date(now - 86400000 * 2).toISOString(), shared_with_me: false, owner: null, local: 'I:\\Photos\\Holiday 2026' },
+      { uuid: 'b', name: 'Quarterly report.docx', is_dir: false, size: 48234496, shared_at: new Date(now - 3600000 * 5).toISOString(), shared_with_me: false, owner: null, local: 'I:\\Work\\Quarterly report.docx' },
+      { uuid: 'c', name: 'Band rehearsal', is_dir: true, size: 0, shared_at: new Date(now - 86400000 * 30).toISOString(), shared_with_me: true, owner: 'friend@example.com', local: null },
+    ] }), 300);
+  }
+}
+if (!window.ipc && location.hash && VIEW === 'settings') setTimeout(() => selectTab(location.hash.slice(1)), 50);
+</script>
+</body>
+</html>

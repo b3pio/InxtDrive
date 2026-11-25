@@ -1,0 +1,22 @@
+[package]
+name = "inxt-winfsp"
+description = "Windows drive-letter adapter for the InxtDrive engine, built on WinFsp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+inxt-core.workspace = true
+winfsp.workspace = true
+widestring.workspace = true
+parking_lot.workspace = true
+tracing.workspace = true
+anyhow.workspace = true
+windows = { workspace = true, features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_Security_Authorization",
+    "Win32_Storage_FileSystem",
+    "Win32_System_Memory",
+] }

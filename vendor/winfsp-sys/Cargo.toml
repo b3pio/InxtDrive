@@ -1,0 +1,20 @@
+# Vendored from crates.io winfsp-sys 0.12.1+winfsp-2.1 (GPL-3.0).
+# Change: build.rs uses the shipped pregenerated bindings instead of bindgen,
+# so no libclang is needed to build.
+
+[package]
+edition = "2021"
+name = "winfsp-sys"
+version = "0.12.1+winfsp-2.1"
+build = "build.rs"
+description = "Raw bindings to WinFSP"
+license = "GPL-3.0"
+repository = "https://github.com/SnowflakePowered/winfsp-rs"
+
+[features]
+docsrs = []
+system = []
+
+[lib]
+name = "winfsp_sys"
+path = "src/lib.rs"

@@ -1,0 +1,16 @@
+[package]
+name = "inxt-fuse"
+description = "Linux folder adapter for the InxtDrive engine, built on FUSE"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[target.'cfg(target_os = "linux")'.dependencies]
+inxt-core.workspace = true
+parking_lot.workspace = true
+tracing.workspace = true
+anyhow.workspace = true
+tokio.workspace = true
+fuser = { version = "0.15", default-features = false }
+libc = "0.2"

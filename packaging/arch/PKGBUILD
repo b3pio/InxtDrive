@@ -1,0 +1,64 @@
+# Maintainer: InxtDrive contributors <dev@inxtdrive.invalid>
+#
+# Builds from the checkout this file lives in. scripts/linux/build-packages.sh
+# runs it with the version taken from Cargo.toml.
+
+pkgname=inxtdrive
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Unofficial Internxt Drive client that mounts your cloud as a folder"
+arch=('x86_64')
+url="https://internxt.com"
+license=('GPL-3.0-or-later')
+depends=(
+  'cairo'
+  'dbus'
+  'fuse3'
+  'gdk-pixbuf2'
+  'glib2'
+  'glibc'
+  'gtk3'
+  'hicolor-icon-theme'
+  'libayatana-appindicator'
+  'libgcc'
+  'libsoup3'
+  'webkit2gtk-4.1'
+  'xdg-utils'
+)
+makedepends=('cargo' 'pkgconf')
+options=('!lto' '!debug')
+
+_root="${INXT_ROOT:-$(realpath "$startdir/../..")}"
+
+# Panic messages embed the source path of every crate, which would put the
+# builder's home directory in the binaries. The last matching prefix wins.
+_cargo_env() {
+  export CARGO_TARGET_DIR="$srcdir/target"
+  export RUSTFLAGS="${RUSTFLAGS:-} --remap-path-prefix=$HOME=~ --remap-path-prefix=${CARGO_HOME:-$HOME/.cargo}=cargo --remap-path-prefix=$_root=inxtdrive --remap-path-prefix=$srcdir=build"
+}
+
+prepare() {
+  cd "$_root"
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/^host: //p')"
+}
+
+build() {
+  cd "$_root"
+  _cargo_env
+  cargo build --frozen --release -p inxtdrive
+}
+
+check() {
+  cd "$_root"
+  _cargo_env
+  cargo test --frozen --release -p inxt-api -p inxt-core -p inxt-fuse -p inxtdrive --lib
+}
+
+package() {
+  install -Dm755 "$srcdir/target/release/inxtdrive" "$pkgdir/usr/bin/inxtdrive"
+  install -Dm755 "$srcdir/target/release/inxt" "$pkgdir/usr/bin/inxt"
+  install -Dm644 "$_root/packaging/linux/inxtdrive.desktop" "$pkgdir/usr/share/applications/inxtdrive.desktop"
+  install -Dm644 "$_root/assets/inxtdrive.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/inxtdrive.svg"
+  install -Dm644 "$_root/assets/inxtdrive-256.png" "$pkgdir/usr/share/icons/hicolor/256x256/apps/inxtdrive.png"
+  install -Dm644 "$_root/README.md" "$pkgdir/usr/share/doc/inxtdrive/README.md"
+}
