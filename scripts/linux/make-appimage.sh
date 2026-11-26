@@ -59,6 +59,9 @@ DEPLOY_GTK_VERSION=3 linuxdeploy \
 lib="$(ls "$appdir"/usr/lib/libwebkit2gtk-4.1.so.0* | head -n1)"
 sed -i -e "s|/usr/lib/$multiarch/webkit2gtk-4.1|././/lib/$multiarch/webkit2gtk-4.1|g" "$lib"
 
+install -m644 assets/inxtdrive-256.png "$appdir/inxtdrive.png"
+ln -sf inxtdrive.png "$appdir/.DirIcon"
+
 rm -f "$appdir/AppRun"
 cat > "$appdir/AppRun" <<'EOF'
 #!/bin/sh

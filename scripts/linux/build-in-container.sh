@@ -21,6 +21,8 @@ rustup update stable >/dev/null
 command -v cargo-deb >/dev/null || cargo install --locked cargo-deb
 command -v cargo-generate-rpm >/dev/null || cargo install --locked cargo-generate-rpm
 
+export RUSTFLAGS="${RUSTFLAGS:-} --remap-path-prefix=/root/.cargo=cargo --remap-path-prefix=/src=inxtdrive"
+
 cd /src
 version="$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n1)"
 cargo build --locked --release -p inxtdrive
